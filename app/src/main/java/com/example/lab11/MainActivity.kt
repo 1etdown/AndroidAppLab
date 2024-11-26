@@ -2,41 +2,30 @@ package com.example.lab11
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
+import com.example.lab11.R
 
-class `MainActivity` : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
-            navigateToOnboard()
-        }
+        // Находим NavHostFragment
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        // Настраиваем ActionBar с NavController
+        setupActionBarWithNavController(navController)
     }
 
-    fun navigateToOnboard() {
-        replaceFragment(OnboardFragment())
-    }
-
-    fun navigateToSignIn(bundle: Bundle? = null) {
-        val fragment = SignInFragment()
-        fragment.arguments = bundle
-        replaceFragment(fragment)
-    }
-
-    fun navigateToSignUp() {
-        replaceFragment(SignUpFragment())
-    }
-
-    fun navigateToHome() {
-        replaceFragment(`HomeFragment`())
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .addToBackStack(null)
-            .commit()
+    // Поддержка кнопки "Назад" в ActionBar
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
