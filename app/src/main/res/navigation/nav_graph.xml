@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:startDestination="@id/onboardFragment">
 
+    <!-- Onboard Fragment -->
     <fragment
         android:id="@+id/onboardFragment"
         android:name="com.example.lab4plus.OnboardFragment"
@@ -13,18 +14,11 @@
             app:destination="@id/signInFragment" />
     </fragment>
 
+    <!-- Sign In Fragment -->
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.example.lab4plus.SignInFragment"
         tools:layout="@layout/fragment_sign_in">
-        <argument
-            android:name="email"
-            app:argType="string"
-            android:defaultValue="" />
-        <argument
-            android:name="password"
-            app:argType="string"
-            android:defaultValue="" />
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
             app:destination="@id/signUpFragment" />
@@ -33,22 +27,17 @@
             app:destination="@id/homeFragment" />
     </fragment>
 
+    <!-- Sign Up Fragment -->
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.example.lab4plus.SignUpFragment"
         tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment">
-            <argument
-                android:name="email"
-                app:argType="string"/>
-            <argument
-                android:name="password"
-                app:argType="string"/>
-        </action>
+            app:destination="@id/signInFragment" />
     </fragment>
 
+    <!-- Home Fragment -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.lab4plus.HomeFragment"

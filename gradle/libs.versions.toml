@@ -22,8 +22,21 @@ androidx-activity = { group = "androidx.activity", name = "activity", version.re
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidxNavigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidxNavigation" }
+retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+retrofit-serialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
+kotlinx-serialization = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
+coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+recyclerview = "androidx.recyclerview:recyclerview:1.3.2"
+okhttp3= "com.squareup.okhttp3:okhttp:4.7.2"
+okhttp3-logging = "com.squareup.okhttp3:logging-interceptor:4.7.2"
+lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
+lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+lifecycle-livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "androidxNavigation" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version = "1.8.0" }

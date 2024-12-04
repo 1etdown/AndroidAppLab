@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.lab4plus.databinding.FragmentSignInBinding
 
 class SignInFragment : Fragment() {
 
     private var _binding: FragmentSignInBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
-    private val args: SignInFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,22 +25,16 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val receivedEmail = args.email
-        val receivedPassword = args.password
-
         binding.signInButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
             val password = binding.passwordEditText.text.toString()
 
-            if (email.isBlank() || password.isBlank()) {
-                Toast.makeText(requireContext(), "Fields cannot be empty", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (email == receivedEmail && password == receivedPassword) {
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                // Логика авторизации
+                Toast.makeText(context, "Signed in as $email", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signInFragment_to_homeFragment)
             } else {
-                Toast.makeText(requireContext(), "Invalid email or password", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
 
