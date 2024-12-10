@@ -30,7 +30,7 @@ class SignInFragment : Fragment() {
             val password = binding.passwordEditText.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                // Логика авторизации
+
                 Toast.makeText(context, "Signed in as $email", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signInFragment_to_homeFragment)
             } else {

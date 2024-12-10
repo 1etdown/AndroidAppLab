@@ -31,7 +31,6 @@ class SignUpFragment : Fragment() {
             val password = binding.passwordEditText.text.toString()
 
             if (name.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                // Логика регистрации
                 Toast.makeText(context, "Account created for $name", Toast.LENGTH_SHORT).show()
                 findNavController().navigate(R.id.action_signUpFragment_to_signInFragment)
             } else {

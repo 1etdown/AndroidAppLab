@@ -1,4 +1,3 @@
-// HomeFragment.kt
 package com.example.lab4plus
 
 import android.os.Bundle
@@ -14,6 +13,10 @@ import com.example.lab4plus.databinding.FragmentHomeBinding
 import com.example.lab4plus.character.CharacterViewModel
 import androidx.recyclerview.widget.DividerItemDecoration
 import android.util.Log
+import androidx.navigation.fragment.findNavController
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 
 class HomeFragment : Fragment() {
 
@@ -37,7 +40,6 @@ class HomeFragment : Fragment() {
         val layoutManager = LinearLayoutManager(requireContext())
         binding.chatListView.layoutManager = layoutManager
 
-        // Добавляем разделитель
         val divider = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.chatListView.addItemDecoration(divider)
 
@@ -50,8 +52,33 @@ class HomeFragment : Fragment() {
             Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_SHORT).show()
         }
 
-        // Запрашиваем персонажей со страницы 2, по 50 персонажей на страницу (51-100)
         viewModel.getCharacters(page = 2, pageSize = 50)
+
+        binding.settingsButton.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+        }
+
+        binding.saveButton.setOnClickListener {
+            viewModel.characters.value?.let { heroes ->
+                saveHeroesToFile(heroes)
+            }
+        }
+    }
+
+    private fun saveHeroesToFile(heroes: List<com.example.lab4plus.character.Character>) {
+        val fileName = "heroes_list.txt"
+        val file = File(requireContext().getExternalFilesDir(null), "Documents/$fileName")
+
+        try {
+            FileOutputStream(file).use { fos ->
+                heroes.forEach { hero ->
+                    fos.write("${hero.name}\n".toByteArray())
+                }
+            }
+            Toast.makeText(requireContext(), "Файл сохранён: $fileName", Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            Toast.makeText(requireContext(), "Ошибка при сохранении файла", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {

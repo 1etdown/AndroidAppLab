@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="backgroundGradient" format="reference" />
+    <attr name="topBarBackground" format="reference" />
+    <attr name="topBarTextColor" format="color" />
+    <attr name="buttonBackground" format="reference" />
+    <attr name="buttonTextColor" format="color" />
+    <attr name="listBackground" format="reference" />
+</resources>
