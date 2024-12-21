@@ -6,14 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lab4plus.character.CharacterAdapter
+import com.example.lab4plus.character.CharacterRepository
+import com.example.lab4plus.database.AppDatabase
 import com.example.lab4plus.databinding.FragmentHomeBinding
-import com.example.lab4plus.character.CharacterViewModel
-import androidx.recyclerview.widget.DividerItemDecoration
-import android.util.Log
-import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -22,8 +24,8 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding ?: throw IllegalStateException("Binding is null")
-    private lateinit var viewModel: CharacterViewModel
     private lateinit var adapter: CharacterAdapter
+    private lateinit var repository: CharacterRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +37,11 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this).get(CharacterViewModel::class.java)
+
+        // Инициализация базы данных и репозитория
+        val database = AppDatabase.getDatabase(requireContext())
+        val characterDao = database.characterDao()
+        repository = CharacterRepository(characterDao)
 
         val layoutManager = LinearLayoutManager(requireContext())
         binding.chatListView.layoutManager = layoutManager
@@ -43,43 +49,68 @@ class HomeFragment : Fragment() {
         val divider = DividerItemDecoration(requireContext(), layoutManager.orientation)
         binding.chatListView.addItemDecoration(divider)
 
-        viewModel.characters.observe(viewLifecycleOwner) { characters ->
-            adapter = CharacterAdapter(characters)
-            binding.chatListView.adapter = adapter
-        }
-
-        viewModel.error.observe(viewLifecycleOwner) { message ->
-            Toast.makeText(requireContext(), "Error: $message", Toast.LENGTH_SHORT).show()
-        }
-
-        viewModel.getCharacters(page = 2, pageSize = 50)
+        // Получение персонажей
+        fetchCharacters(2, 50)
 
         binding.settingsButton.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_settingsFragment)
+            // Навигация к настройкам
         }
 
         binding.saveButton.setOnClickListener {
-            viewModel.characters.value?.let { heroes ->
+            CoroutineScope(Dispatchers.IO).launch {
+                val heroes = repository.getAllCharacters()
                 saveHeroesToFile(heroes)
             }
         }
     }
 
-    private fun saveHeroesToFile(heroes: List<com.example.lab4plus.character.Character>) {
-        val fileName = "heroes_list.txt"
-        val file = File(requireContext().getExternalFilesDir(null), "Documents/$fileName")
-
-        try {
-            FileOutputStream(file).use { fos ->
-                heroes.forEach { hero ->
-                    fos.write("${hero.name}\n".toByteArray())
+    private fun fetchCharacters(page: Int, pageSize: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val localCharacters = repository.getAllCharacters()
+            if (localCharacters.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    updateUI(localCharacters)
+                }
+            } else {
+                val characters = repository.fetchCharactersFromApi(page, pageSize)
+                withContext(Dispatchers.Main) {
+                    updateUI(characters)
                 }
             }
-            Toast.makeText(requireContext(), "Файл сохранён: $fileName", Toast.LENGTH_SHORT).show()
-        } catch (e: IOException) {
-            Toast.makeText(requireContext(), "Ошибка при сохранении файла", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun updateUI(characters: List<com.example.lab4plus.character.Character>) {
+        if (::adapter.isInitialized) {
+            adapter.updateData(characters)
+        } else {
+            adapter = CharacterAdapter(characters)
+            binding.chatListView.adapter = adapter
+        }
+    }
+
+    private fun saveHeroesToFile(heroes: List<com.example.lab4plus.character.Character>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val fileName = "heroes_list.txt"
+            val file = File(requireContext().getExternalFilesDir(null), "Documents/$fileName")
+
+            try {
+                FileOutputStream(file).use { fos ->
+                    heroes.forEach { hero ->
+                        fos.write("${hero.name}\n".toByteArray())
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Файл сохранён: $fileName", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(requireContext(), "Ошибка при сохранении файла", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

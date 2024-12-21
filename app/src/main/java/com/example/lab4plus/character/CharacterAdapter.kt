@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lab4plus.databinding.ItemCharacterBinding
-import android.util.Log
 
-class CharacterAdapter(private val characters: List<Character>) :
+class CharacterAdapter(private var characters: List<Character>) :
     RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
 
     inner class CharacterViewHolder(val binding: ItemCharacterBinding) :
@@ -19,7 +18,6 @@ class CharacterAdapter(private val characters: List<Character>) :
             binding.titlesTextView.text = "Titles: ${character.titles.joinToString(", ").ifEmpty { "None" }}"
             binding.aliasesTextView.text = "Aliases: ${character.aliases.joinToString(", ").ifEmpty { "None" }}"
             binding.playedByTextView.text = "Played By: ${character.playedBy.joinToString(", ").ifEmpty { "Unknown" }}"
-            Log.d("CharacterAdapter", "Binding character: ${character.name}")
         }
     }
 
@@ -37,4 +35,9 @@ class CharacterAdapter(private val characters: List<Character>) :
     }
 
     override fun getItemCount(): Int = characters.size
+
+    fun updateData(newCharacters: List<Character>) {
+        characters = newCharacters
+        notifyDataSetChanged()
+    }
 }

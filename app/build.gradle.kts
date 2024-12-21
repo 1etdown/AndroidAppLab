@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    id("com.google.devtools.ksp")
+
 }
 
 android {
@@ -50,6 +53,7 @@ dependencies {
     implementation(libs.coroutines)
     implementation(libs.recyclerview)
     implementation (libs.okhttp3)
+
     implementation(libs.kotlinx.serialization)
     implementation(libs.datastore.preferences)
     implementation(libs.datastore.core)
@@ -63,8 +67,15 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.databinding.adapters)
+    implementation(libs.lifecycle)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
+    ksp(libs.androidx.room.room.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+
 
 }

@@ -1,16 +1,27 @@
-// CharacterRepository.kt
 package com.example.lab4plus.character
 
-import android.util.Log
+import com.example.lab4plus.database.CharacterDao
+import com.example.lab4plus.database.CharacterEntity
 
-class CharacterRepository {
-    suspend fun fetchCharacters(page: Int, pageSize: Int): List<Character> {
+class CharacterRepository(private val characterDao: CharacterDao) {
+
+     fun getAllCharacters(): List<Character> {
+        return characterDao.getAllCharacters().map { it.toCharacter() }
+    }
+
+    // Получение персонажей из API и сохранение их в локальную базу данных
+    suspend fun fetchCharactersFromApi(page: Int, pageSize: Int): List<Character> {
         return try {
-            val response = RetrofitInstance.api.getCharacters(page, pageSize)
-            Log.d("CharacterRepository", "Fetched page $page: ${response.size} characters")
-            response
+            // Запрос персонажей из API
+            val characters = RetrofitInstance.api.getCharacters(page, pageSize)
+            // Преобразование полученных данных в сущности для базы данных
+            val entities = characters.map { CharacterEntity.fromCharacter(it) }
+            // Сохранение сущностей в локальную базу данных
+            characterDao.insertCharacters(entities)
+            // Возврат полученных персонажей
+            characters
         } catch (e: Exception) {
-            Log.e("CharacterRepository", "Error fetching characters", e)
+            // В случае ошибки возвращаем пустой список
             emptyList()
         }
     }

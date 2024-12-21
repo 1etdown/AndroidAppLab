@@ -13,6 +13,10 @@ androidxNavigation = "2.8.4"
 roomCommon = "2.6.1"
 roomKtx = "2.6.1"
 databindingAdapters = "8.7.3"
+roomCompiler = "2.6.1"
+roomCompilerVersion = "2.6.1"
+room = "2.6.1"
+ksp = "1.9.0-1.0.12"
 
 [libraries]
 
@@ -37,16 +41,22 @@ datastore-core = { group = "androidx.datastore", name = "datastore-core", versio
 
 okhttp3-logging = "com.squareup.okhttp3:logging-interceptor:4.7.2"
 lifecycle = "androidx.lifecycle:lifecycle-extensions:2.2.0"
-lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
-lifecycle-livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+lifecycle-viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
+lifecycle-livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.8.7"
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-databinding-adapters = { group = "androidx.databinding", name = "databinding-adapters", version.ref = "databindingAdapters" }
+room = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
 
 
 [plugins]
+org-jetbrains-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 navigation-safeargs = { id = "androidx.navigation.safeargs", version.ref = "androidxNavigation" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version = "1.8.0" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
